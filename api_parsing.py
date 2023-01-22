@@ -2,9 +2,6 @@ import requests
 import json
 
 
-# print(data.json())
-
-
 class Writing:
 
     @classmethod
@@ -22,8 +19,9 @@ class Link:
     # https://developers.ria.com/auto/search?api_key=gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd&category_id=1&marka_id=2/
     # https://developers.ria.com/auto/info?api_key=gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd&auto_id={auto_id}
 
-    def __init__(self):
+    def __init__(self, car):
         self._DOMAIN = f'https://developers.ria.com/auto/search?'
+        self.car = car  # Composition
         self._middle_url = self.build_middle_url()
         self.API_KEY = 'gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd'
         self.__full_link = self.full_link
@@ -36,19 +34,18 @@ class Link:
         return f'api_key={self.API_KEY}'
 
     def build_middle_url(self):
-        car_1 = Car().all_cars_to_str()
+        car_1 = self.car.all_cars_to_str()
         return car_1
 
 
 class LinkCar(Link):
 
-    def __init__(self,car_link):
-        self.car_link=car_link
+    def __init__(self, car_link, car):
+        self.car_link = car_link
         print(ParsingData.allrequests(car_link.full_link)['result']['search_result']['ids'])  # це ужас
-        super().__init__()
+        super().__init__(car)
 
         self._DOMAIN = f'https://developers.ria.com/auto/info?'
-
 
     # оно как обьект воспринимает его не как строку, А КАК КЛАСС
     @property
@@ -56,7 +53,7 @@ class LinkCar(Link):
         return self._DOMAIN + self.bulid_request_api_key() + self._middle_url
 
     def build_middle_url(self):
-        car_1 = Car().car_id_to_str()
+        car_1 = self.car.car_id_to_str()
         return car_1
 
 
@@ -128,20 +125,18 @@ class ProcessData:
         return jsonCarId
 
 
-class Car():
+class Car:
 
     def __init__(self):
         self.category_id = None
         self.car_brand = None
         self.auto_id = None
-        self.initialise_data()
-
-
+        self.initialise_data()      #TODO переделать на тг бота
 
     def initialise_data(self):
+        #TODO получить данные с ввода пользователя в тг боте и записать их в переменные
         self.category_id = int(input('Input category_id: '))
         self.car_brand = int(input('Input car_brand: '))
-
 
     def all_cars_to_str(self):
         return f"&category_id={self.category_id}&car_brand={self.car_brand}/"
@@ -151,61 +146,33 @@ class Car():
         return f'&auto_id={self.auto_id}'
 
 
-# class Parsing:
-#     API_KEY = 'gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd'
-#
-#     def __init__(self, file_output=None):
-#         self.file_output = file_output
-#         self.link = self.build_link()
-#
-#     def build_link(self):
-#         # gte=2005&year[0].lte=2023&size=20
-#         category_id = int(input('category id:'))
-#         car_brand = int(input('marka id:'))
-#         # model_id = int(input('model id:'))
-#
-#         # link = f'https://developers.ria.com/auto/categories.main.id={category_id}&car_brand={car_brand}?api_key=gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd'
-#
-#         link = f'https://developers.ria.com/auto/search?api_key=gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd&category_id={category_id}&car_brand={car_brand}/'
-#         # f'&model_id=0&s_yers%5B0%5D=2011&po_yers%5B0%5D=2016&custom=1&type%5B5%5D=6&gearbox%5B1%5D=2&gearbox%5B2%5D=3&countpage=100'
-#         data = requests.get(link).json()
-#         with open('data.json', 'w') as f:
-#             f.write(json.dumps(data))
-#         print(data)
-#         auto_id = int(input('Auto id:'))
-#         link_auto = f'https://developers.ria.com/auto/info?api_key=gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd&auto_id={auto_id}'
-#         data = requests.get(link_auto).json()
-#         print(data)
+# we created an object of the class Car and passed it to the Link class
+car = Car()
+link = Link(car)
+link_id = LinkCar(link, car)
 
+prdt1 = ProcessData(link, link_id)
+prdt = ProcessData(link, link_id)  # link_id = Link ALL#
 
-# link = Link()
-# link_id = LinkCar(link)
-#
-# prdt1 = ProcessData(link, link_id)
-# prdt = ProcessData(link, link_id)  # link_id = Link ALL
-#
-#
-# print(link.full_link)
-# print(link_id.full_link)
-#
-# data = ParsingData.allrequests(link.full_link)
-#
-# Writing.write_data_to_file(data)
-#
-# car_data = ParsingData.idrequest(link_id.full_link)
-#
-# Writing.write_car_to_file(car_data)
-#
-# prdt.get_location()
-# prdt.get_data()
-# prdt.get_price()
-# prdt.get_race()
-# prdt.get_bodyId()
-# prdt.get_year()
-# prdt.get_description()
-# prdt.get_active()
-# prdt.get_gearboxName()
-# prdt.get_linkToView()
+print(link.full_link)
+print(link_id.full_link)
+
+data = ParsingData.allrequests(link.full_link)
+
+Writing.write_data_to_file(data)
+car_data = ParsingData.idrequest(link_id.full_link)
+
+Writing.write_car_to_file(car_data)
+prdt.get_location()
+prdt.get_data()
+prdt.get_price()
+prdt.get_race()
+prdt.get_bodyId()
+prdt.get_year()
+prdt.get_description()
+prdt.get_active()
+prdt.get_gearboxName()
+prdt.get_linkToView()
 
 '''
 1) логіка по файлам
