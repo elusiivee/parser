@@ -42,9 +42,13 @@ class Link:
 
 class LinkCar(Link):
 
-    def __init__(self):
+    def __init__(self,car_link):
+        self.car_link=car_link
+        print(ParsingData.allrequests(car_link.full_link)['result']['search_result']['ids'])  # це ужас
         super().__init__()
+
         self._DOMAIN = f'https://developers.ria.com/auto/info?'
+
 
     # оно как обьект воспринимает его не как строку, А КАК КЛАСС
     @property
@@ -52,7 +56,6 @@ class LinkCar(Link):
         return self._DOMAIN + self.bulid_request_api_key() + self._middle_url
 
     def build_middle_url(self):
-
         car_1 = Car().car_id_to_str()
         return car_1
 
@@ -71,13 +74,9 @@ class ParsingData:
 
 
 class ProcessData:
-    def __init__(self,car_link, link_id ):
-        self.jsonAllFile = ParsingData.allrequests(car_link.full_link)   #data.json
-        self.jsonFile = ParsingData.idrequest(link_id.full_link)    #car.json
-
-
-
-
+    def __init__(self, car_link, link_id):
+        self.jsonAllFile = ParsingData.allrequests(car_link.full_link)  # data.json
+        self.jsonFile = ParsingData.idrequest(link_id.full_link)  # car.json#s
 
     def get_location(self):
         jsonDataLocation = self.jsonFile['locationCityName']
@@ -124,7 +123,7 @@ class ProcessData:
         print(f'Link to view: {jsonlinkToView}')
 
     def get_car_id(self):
-        jsonCarId = self.jsonAllFile['result']['search_result']['ids']   #json all file -> must be data.json but it is car.json
+        jsonCarId = self.jsonAllFile['result']['search_result']['ids']
         print(f'Car id : {jsonCarId}')
         return jsonCarId
 
@@ -133,19 +132,19 @@ class Car():
 
     def __init__(self):
         self.category_id = None
-        self.marka_id = None
+        self.car_brand = None
         self.auto_id = None
         self.initialise_data()
 
 
+
     def initialise_data(self):
         self.category_id = int(input('Input category_id: '))
-        self.marka_id = int(input('Input marka_id: '))
-
+        self.car_brand = int(input('Input car_brand: '))
 
 
     def all_cars_to_str(self):
-        return f"&category_id={self.category_id}&marka_id={self.marka_id}/"
+        return f"&category_id={self.category_id}&car_brand={self.car_brand}/"
 
     def car_id_to_str(self):
         self.auto_id = int(input('Input auto_id: '))
@@ -162,12 +161,12 @@ class Car():
 #     def build_link(self):
 #         # gte=2005&year[0].lte=2023&size=20
 #         category_id = int(input('category id:'))
-#         marka_id = int(input('marka id:'))
+#         car_brand = int(input('marka id:'))
 #         # model_id = int(input('model id:'))
 #
-#         # link = f'https://developers.ria.com/auto/categories.main.id={category_id}&marka_id={marka_id}?api_key=gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd'
+#         # link = f'https://developers.ria.com/auto/categories.main.id={category_id}&car_brand={car_brand}?api_key=gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd'
 #
-#         link = f'https://developers.ria.com/auto/search?api_key=gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd&category_id={category_id}&marka_id={marka_id}/'
+#         link = f'https://developers.ria.com/auto/search?api_key=gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd&category_id={category_id}&car_brand={car_brand}/'
 #         # f'&model_id=0&s_yers%5B0%5D=2011&po_yers%5B0%5D=2016&custom=1&type%5B5%5D=6&gearbox%5B1%5D=2&gearbox%5B2%5D=3&countpage=100'
 #         data = requests.get(link).json()
 #         with open('data.json', 'w') as f:
@@ -179,44 +178,48 @@ class Car():
 #         print(data)
 
 
-link = Link()
-link_id = LinkCar()
+# link = Link()
+# link_id = LinkCar(link)
+#
+# prdt1 = ProcessData(link, link_id)
+# prdt = ProcessData(link, link_id)  # link_id = Link ALL
+#
+#
+# print(link.full_link)
+# print(link_id.full_link)
+#
+# data = ParsingData.allrequests(link.full_link)
+#
+# Writing.write_data_to_file(data)
+#
+# car_data = ParsingData.idrequest(link_id.full_link)
+#
+# Writing.write_car_to_file(car_data)
+#
+# prdt.get_location()
+# prdt.get_data()
+# prdt.get_price()
+# prdt.get_race()
+# prdt.get_bodyId()
+# prdt.get_year()
+# prdt.get_description()
+# prdt.get_active()
+# prdt.get_gearboxName()
+# prdt.get_linkToView()
 
-prdt1 = ProcessData(link,link_id)
-prdt = ProcessData(link,link_id)     # link_id = Link ALL
-
-
-
-print(link.full_link)
-print(link_id.full_link)
-
-data = ParsingData.allrequests(link.full_link)
-
-Writing.write_data_to_file(data)
-
-car_data = ParsingData.idrequest(link_id.full_link)
-
-Writing.write_car_to_file(car_data)
-
-prdt.get_location()
-prdt.get_data()
-prdt.get_price()
-prdt.get_race()
-prdt.get_bodyId()
-prdt.get_year()
-prdt.get_description()
-prdt.get_active()
-prdt.get_gearboxName()
-prdt.get_linkToView()
-prdt1.get_car_id()
 '''
-1)логіка по файлам
+1) логіка по файлам
 2) коментарії
 3) general rev cod
-4) уьрати двойний вивід
+4) уьрати двойний вивід                               
 5) телеграм бот і прикрутити логіку 
 6) library telebot dont aiogram
 7) закінчити проект
 
+
+'''
+
+'''
+1) Убрати двойний ввід марки і категорії не виходить бо потрібно мені дві силки зробити, а класи то наслідуються
 
 '''

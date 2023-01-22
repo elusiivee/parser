@@ -1,0 +1,15 @@
+gGAx2DB74m3qaRoNPf5elaWuC3cdUCaZgP8h1pXd
+
+
+
+
+[
+    { name: "Легковые", value: 1 },
+    { name: "Мото", value: 2 },
+    { name: "Водный транспорт", value: 3 },
+    { name: "Спецтехника", value: 4 },
+    { name: "Прицеп", value: 5 },
+    { name: "Грузовик", value: 6 },
+    { name: "Автобус", value: 7 },
+    { name: "Автодом", value: 8 },
+]
