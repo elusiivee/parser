@@ -124,21 +124,18 @@ car_brands = [{"name": "Abarth", "value": 5166}, {"name": "Acura", "value": 98},
               {"name": "СеАЗ", "value": 96}, {"name": "СМЗ", "value": 2491}, {"name": "СПЭВ / SPEV", "value": 1351},
               {"name": "ТагАЗ", "value": 4537}, {"name": "ТогАЗ", "value": 2638}, {"name": "Тренер", "value": 4038},
               {"name": "УАЗ", "value": 93}, {"name": "Циклон", "value": 4021}, {"name": "Эстония", "value": 2307}]
-
+list_cars=['Alfa Romeo','Audi','BMW','Bugatti','Cadillac','Chevrolet','Citroen','Dodge','Ferrari','Fiat','Ford','Honda','Hyundai','Jaguar','Jeep','Kia','Lada','Land Rover','Lexus','Maserati','Maybach','Mazda','Mercedes-Benz','Nissan','Opel','Porsche','Skoda','Smart','Subaru','Suzuki','Tesla','Toyota','Volvo','Богдан','ГАЗ','ЗИЛ','УАЗ']
 # mercedes-benz
 userbrand = input('brand')
-all_cars = [sub['value'] for sub in car_brands if sub['name'] in "Mercedes-Benz, Skoda, Ford, Audi"]  # [6, 24, 48, 70]
+all_cars = [sub['value'] for sub in car_brands if sub['name'] in ('Alfa Romeo','Audi','BMW','Bugatti','Cadillac','Chevrolet','Citroen','Dodge','Ferrari','Fiat','Ford','Honda','Hyundai','Jaguar','Jeep','Kia','Lada','Land Rover','Lexus','Maserati','Maybach','Mazda','Mercedes-Benz','Nissan','Opel','Porsche','Skoda','Smart','Subaru','Suzuki','Tesla','Toyota','Volvo','Богдан','ГАЗ','ЗИЛ','УАЗ')]  # 3, 6, 9, 109, 11, 13, 15, 118, 22, 23, 24, 28, 29, 31, 32, 33, 5553, 37, 38, 45, 46, 47, 48, 55, 56, 59, 70, 71, 75, 76, 2233, 79, 85, 188, 91, 168, 93
 
-#TODO сделать динамически
-available_cars = {
-    "Mercedes-Benz": 6,
-    "Skoda": 24,
-    "Ford": 48,
-    "Audi": 70,
 
-}
+#TODO сделать динамически    #хз як
+available_cars = dict(zip(list_cars,all_cars))
+
 print(all_cars)
-id_car = all_cars.index(userbrand)
+print(available_cars)
+id_car = available_cars[userbrand]
 print(id_car)
 # all_values = [ sub['value'] for sub in car_brands ]
 # id_values=all_values[id_car]
